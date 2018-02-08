@@ -45,14 +45,14 @@ public enum PeriodicTable
 		}
 	}
 	
-	ChemicalElement getChemicalElement(String symbole)
+	ChemicalElement getChemicalElement(String symbol)
 	{
-		return elements.get(symbole);
+		return elements.get(symbol);
 	}
 	
-	public boolean isSymbol(String symbole)
+	public boolean isSymbol(String symbol)
 	{
-		ChemicalElement valeur = elements.get(symbole);
+		ChemicalElement valeur = elements.get(symbol);
 		
 		if (valeur == null)
 		{

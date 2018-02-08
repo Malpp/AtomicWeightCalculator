@@ -1,27 +1,223 @@
 package com.v41.tp1.vuecontroleur;
 
 
+import com.v41.tp1.modele.PeriodicTable;
+import com.v41.tp1.modele.Token;
+import com.v41.tp1.modele.TokenType;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 //Attention, cette classe deviendra un singleton
 //La convertir en conséquence
 public enum ChemicalValidator
 {
-    
-    INSTANCE;
-    
-    private String[] errorMessages;
-
-    private ChemicalValidator()
-    {
-        errorMessages = new String[10];
-        errorMessages[0] = "Error: Formula does not contain anything.";
-        errorMessages[1] = "Error: Formula starts with a number";
-        errorMessages[2] = "Error: This is not a valid element";
-        errorMessages[3] = "Error: A multiplier must be after an element or parenthesis.";
-        errorMessages[4] = "Error: Multiplier less than 2.";
-        errorMessages[5] = "Error: Extra 0 before a multiplier.";;
-        errorMessages[6] = "Error: Empty parenthesis.";
-        errorMessages[7] = "Error: Missing opening parenthesis.";
-        errorMessages[8] = "Error: Missing closing parenthesis.";
-        errorMessages[9] = "Erreo: Invalid characters";
-    }
+	
+	INSTANCE;
+	
+	private String[] errorMessages;
+	private ArrayList<Token> tokens;
+	private static final int maxElementSize = 2;
+	
+	private ChemicalValidator()
+	{
+		tokens = new ArrayList<>();
+		errorMessages = new String[11];
+		errorMessages[Errors.EMPTY.toInt()] = "Error: Formula does not contain anything.\n"; //Done
+		errorMessages[Errors.STARTS_WITH_NUMBER.toInt()] = "Error: Formula starts with a number.\n"; //Done
+		errorMessages[Errors.INVALID_ELEMENT.toInt()] = "Error: This is not a valid element.\n"; //Done
+		errorMessages[Errors.INVALID_MULTIPLER_POSITION.toInt()] = "Error: A multiplier must be after an element or parenthesis.\n"; //Done
+		errorMessages[Errors.MULTIPLIER_TOO_SMALL.toInt()] = "Error: Multiplier less than 2.\n"; //Done
+		errorMessages[Errors.INVALD_MULTIPLIER.toInt()] = "Error: Extra 0 before a multiplier.\n"; //Done
+		errorMessages[Errors.EMPTY_PARENTHESES.toInt()] = "Error: Empty parentheses.\n"; //Done
+		errorMessages[Errors.OPEN_PARENTHESES.toInt()] = "Error: Missing opening parentheses.\n"; //Done
+		errorMessages[Errors.CLOSED_PARENTHESES.toInt()] = "Error: Missing closing parentheses.\n"; //Done
+		errorMessages[Errors.INVALID_CHARACTERS.toInt()] = "Error: Invalid characters.\n"; //Done
+		errorMessages[Errors.STARTS_WITH_CLOSED_PARENTHESE.toInt()] = "Error: Starts with closed parentheses.\n"; //Done
+	}
+	
+	private String getErrorMessage(Errors error)
+	{
+		return errorMessages[error.toInt()];
+	}
+	
+	public boolean validateChemicalFormula(String formula, StringWrapper userReply)
+	{
+		
+		tokens.clear();
+		
+		//Empty string
+		if (formula == null || formula.length() == 0)
+		{
+			userReply.contenu = getErrorMessage(Errors.EMPTY);
+			return false;
+		}
+		
+		//Invalid characters
+		for (int i = 0; i < formula.length(); i++)
+		{
+			char c = formula.charAt(i);
+			
+			if (!Character.isLetterOrDigit(c) && c != '(' && c != ')')
+			{
+				userReply.contenu = getErrorMessage(Errors.INVALID_CHARACTERS);
+				return false;
+			}
+		}
+		
+		//Starts with number
+		if (Character.isDigit(formula.charAt(0)))
+		{
+			userReply.contenu = getErrorMessage(Errors.STARTS_WITH_NUMBER);
+			return false;
+		}
+		
+		//Starts with closed parentheses
+		if (formula.charAt(0) == ')')
+		{
+			userReply.contenu = getErrorMessage(Errors.STARTS_WITH_CLOSED_PARENTHESE);
+			return false;
+		}
+		
+		{//To create the local vars
+			//Check parentheses
+			int parentheses_counter = 0;
+			int last_open = -1;
+			int last_closed = -1;
+			for (int i = 0; i < formula.length(); i++)
+			{
+				char c = formula.charAt(i);
+				
+				if (c == '(')
+				{
+					last_open = i;
+					parentheses_counter++;
+				}
+				
+				if (c == ')')
+				{
+					last_closed = i;
+					parentheses_counter--;
+					if (parentheses_counter < 0) //No open parentheses before it
+					{
+						userReply.contenu = getErrorMessage(Errors.OPEN_PARENTHESES);
+						return false;
+					}
+				}
+				
+				//Parentheses with empty things inside
+				if (last_open != -1 && last_closed != -1 && last_closed - last_open == 1)
+				{
+					userReply.contenu = getErrorMessage(Errors.EMPTY_PARENTHESES);
+					return false;
+				}
+			}
+			
+			if (parentheses_counter > 0)
+			{
+				userReply.contenu = getErrorMessage(Errors.CLOSED_PARENTHESES);
+				return false;
+			}
+		}
+		
+		//Check for numbers with wrong position
+		for (int i = 0; i < formula.length(); i++)
+		{
+			char c = formula.charAt(i);
+			char c_before = formula.charAt(Math.max(0, i-1));
+			
+			if (Character.isDigit(c) && c_before == '(')
+			{
+				userReply.contenu = getErrorMessage(Errors.INVALID_MULTIPLER_POSITION);
+				return false;
+			}
+		}
+		
+		//Check for invalid numbers
+		{
+			List<String> allMatches = new ArrayList<String>(); //https://stackoverflow.com/questions/6020384/create-array-of-regex-matches
+			Matcher m = Pattern.compile("(\\d+)").matcher(formula);
+			while (m.find())
+			{
+				allMatches.add(m.group());
+			}
+			
+			for (String number :
+					allMatches)
+			{
+				if (number.startsWith("0"))
+				{
+					userReply.contenu = getErrorMessage(Errors.STARTS_WITH_NUMBER);
+					return false;
+				}
+				try
+				{
+					double result = Double.parseDouble(number);
+					if (result < 2)
+					{
+						userReply.contenu = getErrorMessage(Errors.MULTIPLIER_TOO_SMALL);
+						return false;
+					}
+				} catch (Exception e)
+				{
+					if (number.startsWith("0"))
+					{
+						userReply.contenu = getErrorMessage(Errors.INVALD_MULTIPLIER);
+						return false;
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i < formula.length(); i++)
+		{
+			char c = formula.charAt(i);
+			if (c == '(' || c == ')')
+			{
+				tokens.add(new Token(c + "", TokenType.PARENTHESES));
+			} else if (Character.isDigit(c))
+			{
+				String number = formula.substring(i, formula.length());
+				Matcher matcher = Pattern.compile("\\d+").matcher(number);
+				matcher.find();
+				String number_found = matcher.group();
+				tokens.add(new Token(number_found, TokenType.NUMBER));
+				i += number_found.length() - 1;
+			} else
+			{
+				boolean matched = false;
+				for (int j = maxElementSize; j > 0; j--)
+				{
+					String element = formula.substring(i, Math.min(i + maxElementSize, formula.length()));
+					Matcher matcher = Pattern.compile("([a-zA-Z]{" + j + "})").matcher(element);
+					if (matcher.find())
+					{
+						String element_found = matcher.group();
+						if (PeriodicTable.INSTANCE.isSymbol(element_found))
+						{
+							tokens.add(new Token(element_found, TokenType.ELEMENT));
+							i += element_found.length() - 1;
+							matched = true;
+							break;
+						}
+					}
+				}
+				if (!matched)
+				{
+					userReply.contenu = getErrorMessage(Errors.INVALID_ELEMENT);
+					return false;
+				}
+			}
+		}
+		
+		userReply.contenu = "Valid\n";
+		return true;
+	}
+	
+	public ArrayList<Token> getTokens()
+	{
+		return tokens;
+	}
 }

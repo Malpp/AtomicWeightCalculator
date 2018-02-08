@@ -110,9 +110,3 @@ Meitnerium,Mt,109,268
 Darmstadtium ,Ds ,110,271
 Roentgenium ,Rg ,111,272
 Copernicium ,Cn ,112,285
-Ununtrium ,Uut ,113,284
-Ununquadium ,Uuq ,114,289
-Ununpentium ,Uup ,115,288
-Ununhexium ,Uuh ,116,292
-Ununseptium ,Uus ,117,295
-Ununoctium ,Uuo ,118,294
