@@ -69,7 +69,7 @@ public class ChemicalFormulaTest
     }
 
     @org.junit.jupiter.api.Test
-    public void H_getWeight_AvecChemicalCompositionContenantParenthesesImbriquées_DevraitRetournerLePoidsCorrespondant() throws Exception
+    public void H_getWeight_AvecChemicalCompositionContenantParenthesesImbriquees_DevraitRetournerLePoidsCorrespondant() throws Exception
     {
         PeriodicTable.INSTANCE.loadTableFromString("tableauPeriodique.txt");
         StringWrapper sw = new StringWrapper();
