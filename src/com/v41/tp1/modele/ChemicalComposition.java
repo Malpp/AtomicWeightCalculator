@@ -5,6 +5,7 @@ import com.v41.tp1.vuecontroleur.portal.IPortalView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class ChemicalComposition implements IPortalModel
@@ -83,7 +84,8 @@ public class ChemicalComposition implements IPortalModel
 			}
 		}
 		
-		view.notify(this);
+		if(view != null)
+			view.notify(this);
 	}
 	
 	private int calculateMultiplier(ArrayList<Integer> multiplier)
@@ -104,6 +106,10 @@ public class ChemicalComposition implements IPortalModel
 	@Override
 	public String getCompositionInformation()
 	{
-		return weight + "";
+		String mapResult = "";
+		for(Map.Entry<String, Double> entry : compositon.entrySet()){ //https://stackoverflow.com/questions/5757202/how-would-i-print-all-values-in-a-treemap
+			mapResult += entry.getKey() + ": " + entry.getValue() + "\n";
+		}
+		return weight + "\n\n" + mapResult;
 	}
 }
