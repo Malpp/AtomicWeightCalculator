@@ -11,7 +11,8 @@ public enum Errors {
     OPEN_PARENTHESES(7),
     CLOSED_PARENTHESES(8),
     INVALID_CHARACTERS(9),
-    STARTS_WITH_CLOSED_PARENTHESE(10);
+    STARTS_WITH_CLOSED_PARENTHESE(10),
+    MULTIPLER_TOO_BIG(11);
     
     /**
      * Value of the error

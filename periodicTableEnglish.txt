@@ -107,6 +107,12 @@ Seaborgium,Sg,106,266
 Bohrium,Bh,107,264
 Hassium,Hs,108,267
 Meitnerium,Mt,109,268
-Darmstadtium ,Ds ,110,271
-Roentgenium ,Rg ,111,272
-Copernicium ,Cn ,112,285
+Darmstadtium,Ds,110,271
+Roentgenium,Rg,111,272
+Copernicium,Cn,112,285
+Nihonium,Nh,113,284
+Flerovium,Fl,114,289
+Moscovium,Mc,115,288
+Livermorium,Lv,116,292
+Tennessine,Ts,117,295
+Oganesson,Og,118,294

@@ -36,7 +36,7 @@ public enum ChemicalValidator
 	private ChemicalValidator()
 	{
 		tokens = new ArrayList<>();
-		errorMessages = new String[11];
+		errorMessages = new String[12];
 		errorMessages[Errors.EMPTY.toInt()] = "Error: Formula does not contain anything.\n"; //Done
 		errorMessages[Errors.STARTS_WITH_NUMBER.toInt()] = "Error: Formula starts with a number.\n"; //Done
 		errorMessages[Errors.INVALID_ELEMENT.toInt()] = "Error: This is not a valid element.\n"; //Done
@@ -48,11 +48,14 @@ public enum ChemicalValidator
 		errorMessages[Errors.CLOSED_PARENTHESES.toInt()] = "Error: Missing closing parentheses.\n"; //Done
 		errorMessages[Errors.INVALID_CHARACTERS.toInt()] = "Error: Invalid characters.\n"; //Done
 		errorMessages[Errors.STARTS_WITH_CLOSED_PARENTHESE.toInt()] = "Error: Starts with closed parentheses.\n"; //Done
+		errorMessages[Errors.MULTIPLER_TOO_BIG.toInt()] = "Error: Multiplier is too big or not a valid Integer.\n"; //Done
 	}
 	
 	/**
 	 * Gets the error message associate to the enum
+	 *
 	 * @param error Error type
+	 *
 	 * @return The error message
 	 */
 	private String getErrorMessage(Errors error)
@@ -62,8 +65,10 @@ public enum ChemicalValidator
 	
 	/**
 	 * Parses the formula string
-	 * @param formula The formula string
+	 *
+	 * @param formula   The formula string
 	 * @param userReply The return message for the user
+	 *
 	 * @return True if successful
 	 */
 	public boolean validateChemicalFormula(String formula, StringWrapper userReply)
@@ -149,7 +154,7 @@ public enum ChemicalValidator
 		for (int i = 0; i < formula.length(); i++)
 		{
 			char c = formula.charAt(i);
-			char c_before = formula.charAt(Math.max(0, i-1));
+			char c_before = formula.charAt(Math.max(0, i - 1));
 			
 			if (Character.isDigit(c) && c_before == '(')
 			{
@@ -194,6 +199,7 @@ public enum ChemicalValidator
 			}
 		}
 		
+		//Create tokens
 		for (int i = 0; i < formula.length(); i++)
 		{
 			char c = formula.charAt(i);
@@ -206,6 +212,14 @@ public enum ChemicalValidator
 				Matcher matcher = Pattern.compile("\\d+").matcher(number);
 				matcher.find();
 				String number_found = matcher.group();
+				try
+				{
+					Integer.parseInt(number_found);
+				} catch (NumberFormatException e)
+				{
+					userReply.content = getErrorMessage(Errors.MULTIPLER_TOO_BIG);
+					return false;
+				}
 				tokens.add(new Token(number_found, TokenType.NUMBER));
 				i += number_found.length() - 1;
 			} else
@@ -241,6 +255,7 @@ public enum ChemicalValidator
 	
 	/**
 	 * Gets the list of tokens
+	 *
 	 * @return The tokens
 	 */
 	public ArrayList<Token> getTokens()
