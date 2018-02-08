@@ -12,12 +12,24 @@ public enum Errors {
     CLOSED_PARENTHESES(8),
     INVALID_CHARACTERS(9),
     STARTS_WITH_CLOSED_PARENTHESE(10);
+    
+    /**
+     * Value of the error
+     */
     private final int value;
-
+    
+    /**
+     * Private constructor
+     * @param value Value of the error
+     */
     private Errors(int value){
         this.value = value;
     }
-
+    
+    /**
+     * Get the value error
+     * @return Error value
+     */
     public int toInt(){
         return value;
     }

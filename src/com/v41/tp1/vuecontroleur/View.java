@@ -7,10 +7,22 @@ import com.v41.tp1.vuecontroleur.portal.IPortalView;
 import java.util.Scanner;
 
 public final class View implements IPortalView {
+	/**
+	 * The current state of the loop
+	 */
     protected boolean running;
-    protected String[] textesInterface;
-    private Scanner scanner;
-
+	/**
+	 * Text to write to the screen
+	 */
+	protected String[] textesInterface;
+	/**
+	 * Get user input
+	 */
+	private Scanner scanner;
+	
+	/**
+	 * View constructor. Also inits the Controller
+	 */
     public View() {
         running = true;
         textesInterface = new String[3];
@@ -22,8 +34,11 @@ public final class View implements IPortalView {
 
         Controller.INSTANCE.init(this, "periodicTableEnglish.txt");
     }
-
-    public void Run() {
+	
+	/**
+	 * Main function of the view. Runs in a while loop.
+	 */
+	public void run() {
         while (running) {
             for (int i = 0; i < 3; i++) {
                 System.out.print(textesInterface[i]);
@@ -36,9 +51,13 @@ public final class View implements IPortalView {
             System.out.print("\n" + result);
         }
     }
-
-    @Override
+	
+	/**
+	 * Portal to receive parsed info from the model
+	 * @param model The model portal
+	 */
+	@Override
     public void notify(IPortalModel model) {
-        System.out.println(model.getCompositionInformation());
+        System.out.println(model.getFormulaInformation());
     }
 }

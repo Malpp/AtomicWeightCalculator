@@ -17,10 +17,22 @@ public enum ChemicalValidator
 	
 	INSTANCE;
 	
+	/**
+	 * List of all error messages
+	 */
 	private String[] errorMessages;
+	/**
+	 * The array of tokens being created
+	 */
 	private ArrayList<Token> tokens;
+	/**
+	 * Max size for an element. In theory should be 3.
+	 */
 	private static final int maxElementSize = 2;
 	
+	/**
+	 * Private constructor
+	 */
 	private ChemicalValidator()
 	{
 		tokens = new ArrayList<>();
@@ -38,11 +50,22 @@ public enum ChemicalValidator
 		errorMessages[Errors.STARTS_WITH_CLOSED_PARENTHESE.toInt()] = "Error: Starts with closed parentheses.\n"; //Done
 	}
 	
+	/**
+	 * Gets the error message associate to the enum
+	 * @param error Error type
+	 * @return The error message
+	 */
 	private String getErrorMessage(Errors error)
 	{
 		return errorMessages[error.toInt()];
 	}
 	
+	/**
+	 * Parses the formula string
+	 * @param formula The formula string
+	 * @param userReply The return message for the user
+	 * @return True if successful
+	 */
 	public boolean validateChemicalFormula(String formula, StringWrapper userReply)
 	{
 		
@@ -51,7 +74,7 @@ public enum ChemicalValidator
 		//Empty string
 		if (formula == null || formula.length() == 0)
 		{
-			userReply.contenu = getErrorMessage(Errors.EMPTY);
+			userReply.content = getErrorMessage(Errors.EMPTY);
 			return false;
 		}
 		
@@ -62,7 +85,7 @@ public enum ChemicalValidator
 			
 			if (!Character.isLetterOrDigit(c) && c != '(' && c != ')')
 			{
-				userReply.contenu = getErrorMessage(Errors.INVALID_CHARACTERS);
+				userReply.content = getErrorMessage(Errors.INVALID_CHARACTERS);
 				return false;
 			}
 		}
@@ -70,14 +93,14 @@ public enum ChemicalValidator
 		//Starts with number
 		if (Character.isDigit(formula.charAt(0)))
 		{
-			userReply.contenu = getErrorMessage(Errors.STARTS_WITH_NUMBER);
+			userReply.content = getErrorMessage(Errors.STARTS_WITH_NUMBER);
 			return false;
 		}
 		
 		//Starts with closed parentheses
 		if (formula.charAt(0) == ')')
 		{
-			userReply.contenu = getErrorMessage(Errors.STARTS_WITH_CLOSED_PARENTHESE);
+			userReply.content = getErrorMessage(Errors.STARTS_WITH_CLOSED_PARENTHESE);
 			return false;
 		}
 		
@@ -102,7 +125,7 @@ public enum ChemicalValidator
 					parentheses_counter--;
 					if (parentheses_counter < 0) //No open parentheses before it
 					{
-						userReply.contenu = getErrorMessage(Errors.OPEN_PARENTHESES);
+						userReply.content = getErrorMessage(Errors.OPEN_PARENTHESES);
 						return false;
 					}
 				}
@@ -110,14 +133,14 @@ public enum ChemicalValidator
 				//Parentheses with empty things inside
 				if (last_open != -1 && last_closed != -1 && last_closed - last_open == 1)
 				{
-					userReply.contenu = getErrorMessage(Errors.EMPTY_PARENTHESES);
+					userReply.content = getErrorMessage(Errors.EMPTY_PARENTHESES);
 					return false;
 				}
 			}
 			
 			if (parentheses_counter > 0)
 			{
-				userReply.contenu = getErrorMessage(Errors.CLOSED_PARENTHESES);
+				userReply.content = getErrorMessage(Errors.CLOSED_PARENTHESES);
 				return false;
 			}
 		}
@@ -130,7 +153,7 @@ public enum ChemicalValidator
 			
 			if (Character.isDigit(c) && c_before == '(')
 			{
-				userReply.contenu = getErrorMessage(Errors.INVALID_MULTIPLER_POSITION);
+				userReply.content = getErrorMessage(Errors.INVALID_MULTIPLER_POSITION);
 				return false;
 			}
 		}
@@ -149,7 +172,7 @@ public enum ChemicalValidator
 			{
 				if (number.startsWith("0"))
 				{
-					userReply.contenu = getErrorMessage(Errors.STARTS_WITH_NUMBER);
+					userReply.content = getErrorMessage(Errors.STARTS_WITH_NUMBER);
 					return false;
 				}
 				try
@@ -157,14 +180,14 @@ public enum ChemicalValidator
 					double result = Double.parseDouble(number);
 					if (result < 2)
 					{
-						userReply.contenu = getErrorMessage(Errors.MULTIPLIER_TOO_SMALL);
+						userReply.content = getErrorMessage(Errors.MULTIPLIER_TOO_SMALL);
 						return false;
 					}
 				} catch (Exception e)
 				{
 					if (number.startsWith("0"))
 					{
-						userReply.contenu = getErrorMessage(Errors.INVALD_MULTIPLIER);
+						userReply.content = getErrorMessage(Errors.INVALD_MULTIPLIER);
 						return false;
 					}
 				}
@@ -206,16 +229,20 @@ public enum ChemicalValidator
 				}
 				if (!matched)
 				{
-					userReply.contenu = getErrorMessage(Errors.INVALID_ELEMENT);
+					userReply.content = getErrorMessage(Errors.INVALID_ELEMENT);
 					return false;
 				}
 			}
 		}
 		
-		userReply.contenu = "Valid\n";
+		userReply.content = "Valid\n";
 		return true;
 	}
 	
+	/**
+	 * Gets the list of tokens
+	 * @return The tokens
+	 */
 	public ArrayList<Token> getTokens()
 	{
 		return tokens;

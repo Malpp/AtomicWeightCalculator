@@ -1,11 +1,10 @@
 package com.v41.tp1.modele.test;
 
 
-//import com.v41.tp1.modele.ChemicalComposition;
+//import com.v41.tp1.modele.ChemicalFormula;
 
 
-import com.v41.tp1.modele.ChemicalComposition;
-import com.v41.tp1.modele.ChemicalElement;
+import com.v41.tp1.modele.ChemicalFormula;
 import com.v41.tp1.modele.PeriodicTable;
 import com.v41.tp1.vuecontroleur.ChemicalValidator;
 import com.v41.tp1.vuecontroleur.StringWrapper;
@@ -13,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ChemicalCompositionTest
+public class ChemicalFormulaTest
 {
     private final double PRECISION = 0.005;  //Si jamais ça ne passe pas descendez la précision
                                              // 0.01 devrait fonctionner avec tout le monde
@@ -22,7 +21,7 @@ public class ChemicalCompositionTest
     {
         PeriodicTable.INSTANCE.loadTableFromString("tableauPeriodique.txt");
         StringWrapper sw = new StringWrapper();
-        ChemicalComposition composeChimique = new ChemicalComposition();
+        ChemicalFormula composeChimique = new ChemicalFormula();
 
         ChemicalValidator.INSTANCE.validateChemicalFormula("H", sw);
         composeChimique.init(ChemicalValidator.INSTANCE.getTokens());
@@ -46,7 +45,7 @@ public class ChemicalCompositionTest
     {
         PeriodicTable.INSTANCE.loadTableFromString("tableauPeriodique.txt");
         StringWrapper sw = new StringWrapper();
-        ChemicalComposition composeChimique = new ChemicalComposition();
+        ChemicalFormula composeChimique = new ChemicalFormula();
 
         ChemicalValidator.INSTANCE.validateChemicalFormula("(NaCl)4", sw);
         composeChimique.init(ChemicalValidator.INSTANCE.getTokens());
@@ -74,7 +73,7 @@ public class ChemicalCompositionTest
     {
         PeriodicTable.INSTANCE.loadTableFromString("tableauPeriodique.txt");
         StringWrapper sw = new StringWrapper();
-        ChemicalComposition composeChimique = new ChemicalComposition();
+        ChemicalFormula composeChimique = new ChemicalFormula();
 
         ChemicalValidator.INSTANCE.validateChemicalFormula("(H(CN)4)5", sw);
         composeChimique.init(ChemicalValidator.INSTANCE.getTokens());
@@ -110,7 +109,7 @@ public class ChemicalCompositionTest
     {
         PeriodicTable.INSTANCE.loadTableFromString("tableauPeriodique.txt");
         StringWrapper sw = new StringWrapper();
-        ChemicalComposition composeChimique = new ChemicalComposition();
+        ChemicalFormula composeChimique = new ChemicalFormula();
 
         ChemicalValidator.INSTANCE.validateChemicalFormula("((MgFe)7Si8(OH)22)", sw);
         composeChimique.init(ChemicalValidator.INSTANCE.getTokens());
